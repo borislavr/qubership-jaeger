@@ -1171,8 +1171,6 @@ remotegRPC:
     #
     # insecureSkipVerify: true
 
-
-
 agent:
   # Allow disabling create agent daemon-set.
   # Type: boolean
