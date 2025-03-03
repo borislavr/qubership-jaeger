@@ -23,7 +23,7 @@ COPY main.go main.go
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -o probe .
 
 # Main container
-FROM alpine:3.21.2
+FROM alpine:3.21.3
 
 ENV USER_UID=2001 \
     USER_NAME=probe \
