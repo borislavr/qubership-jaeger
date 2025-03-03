@@ -13,3 +13,7 @@ version: 0.21.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
 appVersion: 2.2.0
+
+maintainers:
+  - name: borislavr
+    email: boris.lavr@gmail.com
