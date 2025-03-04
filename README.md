@@ -17,5 +17,3 @@ Included components:
 * [jaeger](https://github.com/jaegertracing/jaeger)
 * [readiness-probe](readiness-probe)
 * [deployment-status-provisioner](https://github.com/Netcracker/qubership-deployment-status-provisioner)
-
-
