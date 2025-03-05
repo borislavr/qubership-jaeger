@@ -31,7 +31,7 @@ jobs:
             platforms=$(jq -c ".platforms" "$GITHUB_WORKSPACE/.github/docker-build-config.json")
           else
             echo "❗ $GITHUB_WORKSPACE/.github/docker-build-config.json file is invalid"
-            echo "❗ $GITHUB_WORKSPACE/.github/docker-build-config.json file is invalid" >> $GITHUB_STAGE_SUMMARY
+            echo "❗ $GITHUB_WORKSPACE/.github/docker-build-config.json file is invalid" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
           echo "components=${components}"
