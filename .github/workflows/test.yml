@@ -26,11 +26,11 @@ jobs:
           | if . then true else false end
           ')
           if [ ${verify} == 'true' ]; then
-            echo "file is valid"
+            echo "✅ $GITHUB_WORKSPACE/.github/docker-build-config.json file is valid"
             components=$(jq -c ".components" "$GITHUB_WORKSPACE/.github/docker-build-config.json")
             platforms=$(jq -c ".platforms" "$GITHUB_WORKSPACE/.github/docker-build-config.json")
           else
-            echo "file is invalid"
+            echo "❗ $GITHUB_WORKSPACE/.github/docker-build-config.json file is invalid"
             exit 1
           fi
           echo "components=${components}"
