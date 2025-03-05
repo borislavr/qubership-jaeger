@@ -1,0 +1,27 @@
+name: Jaeger Release
+
+on:
+    workflow_dispatch:
+jobs:
+  load-docker-build-components:
+    runs-on: ubuntu-latest
+    outputs:
+      component: ${{ steps.load_component.outputs.components }}
+      platforms: ${{ steps.load_component.outputs.platforms }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load Docker Configuration
+        id: load_component
+        run:  |
+          verify=$(cat "$GITHUB_WORKSPACE/.github/docker-build-config.json" | jq 'def verify_structure:
+          .components as $components
+          | .platforms as $platforms
+          | ($components | type == "array")
+          and (all($components[]; has("name") and has("file") and has("context")))
+          and ($platforms | type == "string");
+          verify_structure
+          | if . then true else false end')
+          echo "components=${components}"
+          echo "platforms=${platforms}"
