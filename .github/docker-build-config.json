@@ -2,8 +2,7 @@
     "components" : [
       {
           "name": "jaeger-integration-tests",
-          "file": "integration-tests/Dockerfile",
-          "context": "integration-tests"
+          "file": "integration-tests/Dockerfile"
       },
       {
           "name": "jaeger-readiness-probe",
