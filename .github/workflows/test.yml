@@ -15,14 +15,16 @@ jobs:
       - name: Load Docker Configuration
         id: load_component
         run:  |
-          verify=$(cat "$GITHUB_WORKSPACE/.github/docker-build-config.json" | jq 'def verify_structure:
+          verify=$(cat "$GITHUB_WORKSPACE/.github/docker-build-config.json" | jq '
+          def verify_structure:
           .components as $components
           | .platforms as $platforms
           | ($components | type == "array")
           and (all($components[]; has("name") and has("file") and has("context")))
           and ($platforms | type == "string");
           verify_structure
-          | if . then true else false end')
+          | if . then true else false end
+          ')
           if [ ${verify} == 'true' ]; then
             echo "file is valid"
             components=$(jq -c ".components" "$GITHUB_WORKSPACE/.github/docker-build-config.json")
