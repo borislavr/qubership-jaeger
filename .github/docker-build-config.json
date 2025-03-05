@@ -1,0 +1,20 @@
+{
+    "components" : [
+      {
+          "name": "jaeger-integration-tests",
+          "file": "integration-tests/Dockerfile",
+          "context": "integration-tests"
+      },
+      {
+          "name": "jaeger-readiness-probe",
+          "file": "readiness-probe/Dockerfile",
+          "context": "readiness-probe"
+      },
+      {
+          "name": "jaeger-transfer",
+          "file": "docker-transfer/Dockerfile",
+          "context": "docker-transfer"
+      }
+  ],
+  "platforms" : "linux/amd64,linux/arm64"
+  }
