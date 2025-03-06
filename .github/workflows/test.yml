@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: "tree"
-        run: tree ${GITHUB_WORKSPACE}/
+        run: tree ${GITHUB_WORKSPACE}/../../
       - name: Load Docker Configuration
         id: load_component
         run:  |
