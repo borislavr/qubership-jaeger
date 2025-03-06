@@ -11,8 +11,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: "Actions README.md"
-        run: cat ${GITHUB_WORKSPACE}/../../_actions/actions/checkout/v4/README.md
+      - name: "Chart version"
+        uses: netcracker/qubership-workflow-hub/actions/chart-version@main
+        with:
+          new-chart-version: "2.2.2"
+          chart-yaml-path: "Chart.yaml"
+            
+      - name: "tree"
+        if: always()
+        run: tree ${GITHUB_WORKSPACE}/../../
       - name: Load Docker Configuration
         id: load_component
         run:  |
