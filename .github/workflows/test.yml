@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: "tree"
-        run: tree ${GITHUB_WORKSPACE}/../../
+      - name: "Actions README.md"
+        run: cat ${GITHUB_WORKSPACE}/../../_actions/actions/checkout/v4/README.md
       - name: Load Docker Configuration
         id: load_component
         run:  |
