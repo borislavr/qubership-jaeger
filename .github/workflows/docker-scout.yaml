@@ -13,7 +13,7 @@ jobs:
         id: baseimages
         run: |
           chmod +x ./.github/scripts/base_images.sh
-          baseimages=$(./.github/scripts/base_images.sh 2>/dev/null | jq -c '.unique_base_images[]')
+          baseimages=$(./.github/scripts/base_images.sh 2>/dev/null)
           echo "baseimages=${baseimages}"
           echo "baseimages=${baseimages}" >> $GITHUB_OUTPUT
   report:
@@ -22,7 +22,7 @@ jobs:
     if: ${{ needs.prepare.outputs.baseimages != '' }}
     strategy:
       matrix:
-        image: ${{ fromJson(needs.prepare.outputs.baseimages) }}
+        image: ${{ fromJson(needs.prepare.outputs.baseimages).unique_base_images }}
     steps:
       - name: Analyze for critical and high CVEs
         id: docker-scout-cves
