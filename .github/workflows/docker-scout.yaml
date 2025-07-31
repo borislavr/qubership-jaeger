@@ -1,0 +1,35 @@
+name: "Docker Scout report"
+on:
+  workflow_dispatch
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      dockerfiles: ${{ steps.dockerfiles.outputs.DOCKERFILES }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Find Dockerfiles
+        id: dockerfiles
+        run: |
+          DOCKERFILES=$(find . -name=Dockerfile*)
+          echo "DOCKERFILES=${DOCKERFILES}"
+          echo "DOCKERFILES=${DOCKERFILES}" >> $GITHUB_OUTPUT
+  report:
+          
+      - name: Analyze for critical and high CVEs
+        id: docker-scout-cves
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: docker/scout-action@v1
+        with:
+          command: cves,recommendaions
+          image: ${{ steps.meta.outputs.tags }}
+          sarif-file: sarif.output.json
+          summary: true
+
+      - name: Upload SARIF result
+        id: upload-sarif
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: sarif.output.json
