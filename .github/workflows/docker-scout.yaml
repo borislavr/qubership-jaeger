@@ -5,25 +5,32 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      dockerfiles: ${{ steps.dockerfiles.outputs.DOCKERFILES }}
+      baseimages: ${{ steps.baseimages.outputs.baseimages }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Find Dockerfiles
-        id: dockerfiles
+        id: baseimages
         run: |
-          DOCKERFILES=$(find . -name=Dockerfile*)
-          echo "DOCKERFILES=${DOCKERFILES}"
-          echo "DOCKERFILES=${DOCKERFILES}" >> $GITHUB_OUTPUT
+          chmod +x ./github/scripts/base_images.sh
+          baseimages=$(./github/scripts/base_images.sh)
+          echo "baseimages=${baseimages}"
+          echo "baseimages=${baseimages}" >> $GITHUB_OUTPUT
   report:
-          
+    runs-on: ubuntu-latest
+    needs: prepare
+    if: ${{ needs.prepare.outputs.baseimages != '' }}
+    strategy:
+      matrix:
+        image: ${{ fromJson(needs.prepare.outputs.baseimages).baseimages }}
+    steps:
       - name: Analyze for critical and high CVEs
         id: docker-scout-cves
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: docker/scout-action@v1
         with:
           command: cves,recommendaions
-          image: ${{ steps.meta.outputs.tags }}
+          image: ${{ matrix.image }}
           sarif-file: sarif.output.json
           summary: true
 
