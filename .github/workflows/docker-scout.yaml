@@ -12,8 +12,8 @@ jobs:
       - name: Find Dockerfiles
         id: baseimages
         run: |
-          chmod +x ./github/scripts/base_images.sh
-          baseimages=$(./github/scripts/base_images.sh)
+          chmod +x ./.github/scripts/base_images.sh
+          baseimages=$(./.github/scripts/base_images.sh)
           echo "baseimages=${baseimages}"
           echo "baseimages=${baseimages}" >> $GITHUB_OUTPUT
   report:
