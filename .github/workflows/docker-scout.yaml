@@ -13,7 +13,7 @@ jobs:
         id: baseimages
         run: |
           chmod +x ./.github/scripts/base_images.sh
-          baseimages=$(./.github/scripts/base_images.sh | jq '.unique_base_images[]')
+          baseimages=$(./.github/scripts/base_images.sh | jq -c '.unique_base_images[]')
           echo "baseimages=${baseimages}"
           echo "baseimages=${baseimages}" >> $GITHUB_OUTPUT
   report:
