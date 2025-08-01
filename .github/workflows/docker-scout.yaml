@@ -33,6 +33,8 @@ jobs:
           image: ${{ matrix.image }}
           sarif-file: sarif.output.json
           summary: true
+          dockerhub-user: ${{ secrets.DOCKER_IO_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_IO_PASSWORD }}
 
       - name: Upload SARIF result
         id: upload-sarif
