@@ -29,7 +29,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: docker/scout-action@v1
         with:
-          command: cves,recommendaions
+          command: cves,recommendations
           image: ${{ matrix.image }}
           sarif-file: sarif.output.json
           summary: true
