@@ -143,6 +143,8 @@ jobs:
         for file in ./meta-data-files/*.json; do
           meta_data_files="$meta_data_files $file"
         done
+        echo "[DEBUG] Metadata files: ${meta_data_files}"
+        pip install .
         export PYTHONPATH=src
         python3 -m app_manifest_cli.cli  generate --config ../current-repo/.github/qubership-jaeger-am-build.yaml ${meta_data_files}
     - name: Upload AM
