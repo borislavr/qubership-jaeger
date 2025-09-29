@@ -152,6 +152,13 @@ jobs:
       with:
         name: ${{ github.event.repository.name }}-application-manifest-v${{ inputs.version }}
         path: "./cli/*.json"
+    - name: Upload AM to release
+      uses: netcracker/qubership-workflow-hub/actions/assets-action@9319676b7d20b423a2e0943a0ac08da07d615998 #v1.0.6
+      with:
+        tag: v${{ inputs.version }}
+        item-path: "./cli/*.json"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   github-release:
     needs: [docker-build]
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
@@ -159,19 +166,20 @@ jobs:
       version: ${{ github.event.inputs.version }}
       publish: false
 
-  upload-assets:
-    needs: [github-release]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  # upload-assets:
+  #   needs: [github-release]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Archive and Upload Assets
-      uses: netcracker/qubership-workflow-hub/actions/archive-and-upload-assets@v1.0.6
-      with:
-        config-path: './.github/assets-config.yml'
-        dist-path: './dist'
-        upload: true
-        ref: v${{ github.event.inputs.version }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Archive and Upload Assets
+  #     uses: netcracker/qubership-workflow-hub/actions/assets-action@v1.0.6
+  #     with:
+  #       tag: v${{ inputs.version }}
+  #       config-path: './.github/assets-config.yml'
+  #       dist-path: './dist'
+  #       upload: true
+  #       ref: v${{ github.event.inputs.version }}
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

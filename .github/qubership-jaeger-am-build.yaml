@@ -1,32 +1,80 @@
-applicationVersion: 0.0.3
-applicationName: qubership-jaeger
+applicationVersion: 1.2.3
+applicationName: jaeger
 components:
-  - name: qubership-jaeger
-    version: 0.0.3
-    mimeType: "application/vnd.qubership.helm.chart"
-    reference: "oci://ghcr.io/borislavr/qubership-jaeger/qubership-jaeger:0.0.3"
+  # application/vnd.qubership.standalone-runnable
+  - name: cassandra
+    mimeType: application/vnd.qubership.standalone-runnable
     dependsOn:
-      - name: jaeger-integration-tests
+      - name: qubership-jaeger
+        mimeType: application/vnd.qubership.helm.chart
+  # application/vnd.qubership.helm.chart
+  - name: qubership-jaeger
+    mimeType: application/vnd.qubership.helm.chart
+    dependsOn:
+      - name: jaeger-cassandra-schema
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.3
-      - name: qubership-deployment-status-provisioner
+        valuesPathPrefix: cassandraSchema
+      - name: jaeger
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2
+        valuesPathPrefix: jaeger
       - name: jaeger-readiness-probe
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.3
-      - name: spark-dependencies
+        valuesPathPrefix: readinessProbe
+      - name: example-hotrod
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
+        valuesPathPrefix: exampleHotrod
+      - name: jaeger-integration-tests
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: integrationTests
+      - name: jaeger-es-index-cleaner
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: elasticsearch.indexCleaner
+      - name: jaeger-es-rollover
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: elasticsearch.rollover
+      - name: envoy
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: proxy
+      - name: openjdk
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: .
+      - name: spark-dependencies-image
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: spark
+      - name: qubership-deployment-status-provisioner
+        mimeType: application/vnd.docker.image
+        valuesPathPrefix: statusProvisioner
+  # application/vnd.docker.image
+  - name: jaeger-cassandra-schema
+    mimeType: application/vnd.docker.image
+    reference: docker.io/jaegertracing/jaeger-cassandra-schema:1.72.0
+  - name: jaeger
+    mimeType: application/vnd.docker.image
+    reference: docker.io/jaegertracing/jaeger:2.9.0
+  - name: jaeger-readiness-probe
+    mimeType: application/vnd.docker.image
+  - name: jaeger-readiness-probe
+    mimeType: application/vnd.docker.image
+  - name: example-hotrod
+    mimeType: application/vnd.docker.image
+    reference: docker.io/jaegertracing/example-hotrod:1.72.0
   - name: jaeger-integration-tests
     mimeType: application/vnd.docker.image
-    reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.3
+  - name: jaeger-es-index-cleaner
+    mimeType: application/vnd.docker.image
+    reference: docker.io/jaegertracing/jaeger-es-index-cleaner:1.72.0
+  - name: jaeger-es-rollover
+    mimeType: application/vnd.docker.image
+    reference: docker.io/jaegertracing/jaeger-es-rollover:1.72.0
+  - name: envoy
+    mimeType: application/vnd.docker.image
+    reference: docker.io/envoyproxy/envoy:v1.32.6
+  - name: openjdk
+    mimeType: application/vnd.docker.image
+    reference: docker.io/openjdk:11
+  - name: spark-dependencies-image
+    mimeType: application/vnd.docker.image
+    reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
   - name: qubership-deployment-status-provisioner
     mimeType: application/vnd.docker.image
     reference: ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2
-  - name: jaeger-readiness-probe
-    mimeType: application/vnd.docker.image
-    reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.3
-  - name: spark-dependencies
-    mimeType: application/vnd.docker.image
-    reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
