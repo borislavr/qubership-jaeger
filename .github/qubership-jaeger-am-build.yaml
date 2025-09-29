@@ -8,25 +8,25 @@ components:
     dependsOn:
       - name: jaeger-integration-tests
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.3
+        reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.2
       - name: qubership-deployment-status-provisioner
         mimeType: application/vnd.docker.image
         reference: ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2
       - name: jaeger-readiness-probe
         mimeType: application/vnd.docker.image
-        reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.3
+        reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.2
       - name: spark-dependencies
         mimeType: application/vnd.docker.image
         reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
   - name: jaeger-integration-tests
     mimeType: application/vnd.docker.image
-    reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.3
+    reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.2
   - name: qubership-deployment-status-provisioner
     mimeType: application/vnd.docker.image
     reference: ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2
   - name: jaeger-readiness-probe
     mimeType: application/vnd.docker.image
-    reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.3
+    reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.2
   - name: spark-dependencies
     mimeType: application/vnd.docker.image
     reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
