@@ -67,6 +67,7 @@ jobs:
   prepare-chart-and-tag:
     permissions:
       contents: write
+      packages: write
     needs: [check-tag]
     runs-on: ubuntu-latest
     steps:
