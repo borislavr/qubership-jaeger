@@ -1,0 +1,16 @@
+---
+
+# Charts release configuration file example
+# This file is used to update the version of the helm charts and images in the values.yaml file
+# It is used in the helm-charts-release action
+# ${release} is replaced with the release version provided in the workflow
+
+charts:
+  - name: qubership-jaeger
+    chart_file: charts/qubership-jaeger/Chart.yaml
+    values_file: charts/qubership-jaeger/templates/_helpers.tpl
+    image:
+      - ghcr.io/netcracker/jaeger-integration-tests:${release}
+      - ghcr.io/netcracker/qubership-deployment-status-provisioner:#latest
+      - ghcr.io/netcracker/jaeger-readiness-probe:${release}
+      - ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:#latest
