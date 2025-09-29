@@ -77,7 +77,7 @@ jobs:
         chart-yaml-path: ${{ github.event.inputs.path-to-chart }}
 
     - name: Run Commit and Push Action
-      uses: Netcracker/qubership-workflow-hub/actions/commit-and-push@main
+      uses: Netcracker/qubership-workflow-hub/actions/commit-and-push@v1.0.6
       with:
         commit_message: "Update chart version to v${{ github.event.inputs.version }}"
 
@@ -127,7 +127,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Archive and Upload Assets
-      uses: netcracker/qubership-workflow-hub/actions/archive-and-upload-assets@main
+      uses: netcracker/qubership-workflow-hub/actions/archive-and-upload-assets@v1.0.6
       with:
         config-path: './.github/assets-config.yml'
         dist-path: './dist'
