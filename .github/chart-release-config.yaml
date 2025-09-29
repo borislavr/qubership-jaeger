@@ -14,3 +14,11 @@ charts:
       - ghcr.io/netcracker/qubership-deployment-status-provisioner:#latest
       - ghcr.io/netcracker/jaeger-readiness-probe:${release}
       - ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:#latest
+  - name: qubership-jaeger-am
+    chart_file: charts/qubership-jaeger/Chart.yaml
+    values_file: .github/qubership-jaeger-am-build.yaml
+    image:
+      - ghcr.io/netcracker/jaeger-integration-tests:${release}
+      - ghcr.io/netcracker/qubership-deployment-status-provisioner:#latest
+      - ghcr.io/netcracker/jaeger-readiness-probe:${release}
+      - ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:#latest

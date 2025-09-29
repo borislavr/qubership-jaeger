@@ -64,7 +64,7 @@ jobs:
         echo "components=${components}" >> $GITHUB_OUTPUT
         echo "platforms=${platforms}" >> $GITHUB_OUTPUT
 
-  prepare-chart-and-tag:
+  prepare-tag-and-release-chart:
     permissions:
       contents: write
       packages: write
@@ -73,6 +73,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
     - name: Release Chart
       uses: netcracker/qubership-workflow-hub/actions/charts-values-update-action@feature/chart-publish-action
       with:
@@ -97,7 +99,7 @@ jobs:
       fail-fast: false
       matrix:
         component: ${{ fromJson(needs.load-docker-build-components.outputs.component) }}
-    needs: [prepare-chart-and-tag, load-docker-build-components]
+    needs: [prepare-tag-and-release-chart, load-docker-build-components]
     steps:
     - name: "Docker Build"
       id: docker_build
@@ -111,6 +113,43 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
 
+  app-manifest-build:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    steps:
+    - name: "Configure helm"
+      uses: azure/setup-helm@v4.3.0
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        ref: v${{ inputs.version }}
+        path: current-repo
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        ref: refactoring
+        path: cli
+    - name: Download metadata
+      uses: actions/download-artifact@v5
+      with:
+        name: ${{ github.event.repository.name }}-application-manifest-v${{ inputs.version }}
+        path: "./cli/meta-data-files"
+        merge-multiple: true
+        pattern: "*.json"
+    - name: Run cli
+      working-directory: cli
+      run: |
+        meta_data_files=""
+        for file in ./meta-data-files/*.json; do
+          meta_data_files="$meta_data_files $file"
+        done
+        export PYTHONPATH=src
+        python3 -m app_manifest_cli.cli  generate --config ../current-repo/.github/qubership-jaeger-am-build.yaml ${meta_data_files}
+    - name: Upload AM
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-application-manifest-v${{ inputs.version }}
+        path: "./cli/*.json"
   github-release:
     needs: [docker-build]
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main

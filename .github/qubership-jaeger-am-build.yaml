@@ -1,0 +1,21 @@
+applicationVersion: 0.0.3
+applicationName: qubership-jaeger
+components:
+  - name: qubership-jaeger
+    version: 0.0.3
+    mimeType: "application/vnd.qubership.helm.chart"
+    reference: "oci://ghcr.io/borislavr/qubership-jaeger/qubership-jaeger:0.0.3"
+    dependsOn:
+      - name: jaeger-integration-tests
+        mimeType: application/vnd.docker.image
+        reference: ghcr.io/netcracker/jaeger-integration-tests:0.0.3
+      - name: qubership-deployment-status-provisioner
+        mimeType: application/vnd.docker.image
+        reference: ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2
+      - name: jaeger-readiness-probe
+        mimeType: application/vnd.docker.image
+        reference: ghcr.io/netcracker/jaeger-readiness-probe:0.0.3
+      - name: spark-dependencies
+        mimeType: application/vnd.docker.image
+        reference: ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1
+
