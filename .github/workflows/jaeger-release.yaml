@@ -37,7 +37,7 @@ jobs:
       platforms: ${{ steps.load_component.outputs.platforms }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Load Docker Configuration
       id: load_component
@@ -70,21 +70,19 @@ jobs:
     needs: [check-tag]
     runs-on: ubuntu-latest
     steps:
-    - name: Change Chart Version Action
-      uses: netcracker/qubership-workflow-hub/actions/chart-version@main
+    - name: Checkout code
+      uses: actions/checkout@v5
+    - name: Release Chart
+      uses: netcracker/qubership-workflow-hub/actions/charts-values-update-action@feature/chart-publish-action
       with:
-        new-chart-version: ${{ github.event.inputs.version }}
-        chart-yaml-path: ${{ github.event.inputs.path-to-chart }}
-
-    - name: Run Commit and Push Action
-      uses: Netcracker/qubership-workflow-hub/actions/commit-and-push@v1.0.6
-      with:
-        commit_message: "Update chart version to v${{ github.event.inputs.version }}"
-
+        config-file: ./.github/chart-release-config.yaml
+        release-version: ${{ inputs.version }}
+        package-charts: true
+        publish-charts: true
     - name: "Create release tag"
       uses: netcracker/qubership-workflow-hub/actions/tag-action@main
       with:
-        ref: ${{ github.ref }}
+        ref: "release-${{ github.event.inputs.version }}"
         check-tag: 'false'
         create-tag: 'true'
         tag-name: v${{ github.event.inputs.version }}
