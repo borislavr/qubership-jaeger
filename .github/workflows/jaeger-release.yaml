@@ -133,7 +133,6 @@ jobs:
     - name: Download metadata
       uses: actions/download-artifact@v5
       with:
-        name: ${{ github.event.repository.name }}-application-manifest-v${{ inputs.version }}
         path: "./cli/meta-data-files"
         merge-multiple: true
         pattern: "*.json"
