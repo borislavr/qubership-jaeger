@@ -127,6 +127,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+        repository: borislavr/qubership-app-manifest-cli
         ref: refactoring
         path: cli
     - name: Download metadata
