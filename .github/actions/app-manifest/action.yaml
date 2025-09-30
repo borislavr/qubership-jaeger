@@ -23,7 +23,7 @@ inputs:
     type: string
 
 outputs:
-  - name: app-manifest-path
+  app-manifest-path:
     description: "The path to the generated application manifest file"
     value: ${{ steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
 runs:
