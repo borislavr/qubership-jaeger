@@ -51,6 +51,7 @@ runs:
       working-directory: ${{ github.workspace }}
       id: generate_app_manifest
       run: |
+        source venv/bin/activate
         app-manifest generate \
           --config "${{ inputs.configuration }}" \
           $([[ -n "${{ inputs.output }}" ]] && echo "--output ${{ inputs.output }}") \
