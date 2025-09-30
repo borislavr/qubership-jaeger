@@ -46,6 +46,9 @@ runs:
         source venv/bin/activate
         python -m pip install --upgrade pip
         pip install .
+        pip list
+        pip install PyYAML>=6.0.3
+        pip list
       shell: bash
     - name: "Generate application manifest"
       working-directory: ${{ github.workspace }}
