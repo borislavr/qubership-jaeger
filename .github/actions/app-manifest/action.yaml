@@ -1,23 +1,23 @@
 name: "Application manifest generation"
 
 inputs:
-  - name: configuration
+  configuration:
     description: "The configuration file for the application manifest generation"
     required: true
     type: string
-  - name: output
+  output:
     description: "The output file path for the generated application manifest"
     required: false
     type: string
-  - name: version
+  version:
     description: "The version to set in the application manifest"
     required: false
     type: string
-  - name: name
+  name:
     description: "The name to set in the application manifest"
     required: false
     type: string
-  - name: meta-data-files
+  meta-data-files:
     description: "Additional metadata files to include in the application manifest"
     required: false
     type: string
