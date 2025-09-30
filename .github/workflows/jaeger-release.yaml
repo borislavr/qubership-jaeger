@@ -167,7 +167,7 @@ jobs:
     - name: Upload AM to release
       uses: netcracker/qubership-workflow-hub/actions/assets-action@9319676b7d20b423a2e0943a0ac08da07d615998 #v1.0.6
       with:
-        tag: ${{ inputs.version }}
+        tag: v${{ inputs.version }}
         item-path: ${{ steps.generate_am.outputs.app-manifest-path }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
