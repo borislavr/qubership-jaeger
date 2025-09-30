@@ -61,7 +61,7 @@ runs:
       shell: bash
     - name: "Upload application manifest"
       if: ${{ always() && steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: application-manifest
         path: ${{ steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
