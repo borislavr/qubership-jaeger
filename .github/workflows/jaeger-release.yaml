@@ -165,11 +165,19 @@ jobs:
         cli-version: refactoring
 
     - name: Upload AM to release
-      uses: AButler/upload-release-assets@v3.0
+      uses: netcracker/qubership-workflow-hub/actions/assets-action@9319676b7d20b423a2e0943a0ac08da07d615998 #v1.0.6
       with:
-        files: "${{ steps.generate_am.outputs.app-manifest-path }}"
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        release-tag: v${{ inputs.version }}
+        tag: ${{ inputs.version }}
+        item-path: ${{ steps.generate_am.outputs.app-manifest-path }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Upload AM to release
+    #   uses: AButler/upload-release-assets@v3.0
+    #   with:
+    #     files: "${{ steps.generate_am.outputs.app-manifest-path }}"
+    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+    #     release-tag: v${{ inputs.version }}
 
   # upload-assets:
   #   needs: [github-release]
