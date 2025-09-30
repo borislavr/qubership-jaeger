@@ -162,6 +162,7 @@ jobs:
         version: ${{ inputs.version }}
         # name: jaeger
         meta-data-files: ${{ env.META_DATA_FILES }}
+        cli-version: refactoring
 
     - name: Upload AM to release
       uses: AButler/upload-release-assets@v3.0
