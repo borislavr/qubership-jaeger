@@ -90,6 +90,13 @@ jobs:
         create-tag: 'true'
         tag-name: v${{ github.event.inputs.version }}
 
+  github-release:
+    needs: [prepare-tag-and-release-chart]
+    uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
+    with:
+      version: ${{ github.event.inputs.version }}
+      publish: false
+
   docker-build:
     permissions:
       contents: write
@@ -123,48 +130,45 @@ jobs:
       uses: actions/checkout@v5
       with:
         ref: v${{ inputs.version }}
-        path: current-repo
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
-        repository: borislavr/qubership-app-manifest-cli
-        ref: refactoring
-        path: cli
+        # path: current-repo
+    # - name: Checkout code
+    #   uses: actions/checkout@v5
+    #   with:
+    #     repository: borislavr/qubership-app-manifest-cli
+    #     ref: refactoring
+    #     path: cli
     - name: Download metadata
       uses: actions/download-artifact@v5
       with:
         path: "./cli/meta-data-files"
         merge-multiple: true
         pattern: "*.json"
-    - name: Run cli
-      working-directory: cli
+    - name: Collect metadata files
+      #working-directory: cli
       run: |
         meta_data_files=""
-        for file in ./meta-data-files/*.json; do
+        for file in ./cli/meta-data-files/*.json; do
           meta_data_files="$meta_data_files $file"
         done
         echo "[DEBUG] Metadata files: ${meta_data_files}"
-        pip install .
-        export PYTHONPATH=src
-        python3 -m app_manifest_cli.cli  generate --config ../current-repo/.github/qubership-jaeger-am-build.yaml --version ${{ inputs.version }} ${meta_data_files}
-    - name: Upload AM
-      uses: actions/upload-artifact@v4
+        echo "META_DATA_FILES=${meta_data_files}" >> $GITHUB_ENV
+
+    - name: Generate AM
+      id: generate_am
+      uses: ./.github/actions/app-manifest
       with:
-        name: ${{ github.event.repository.name }}-application-manifest-v${{ inputs.version }}
-        path: "./cli/*.json"
+        configuration: ./.github/qubership-jaeger-am-build.yaml
+        # output: ./cli/jaeger-application-manifest-v${{ inputs.version }}.json
+        version: ${{ inputs.version }}
+        # name: jaeger
+        meta-data-files: ${{ env.META_DATA_FILES }}
+
     - name: Upload AM to release
-      uses: netcracker/qubership-workflow-hub/actions/assets-action@9319676b7d20b423a2e0943a0ac08da07d615998 #v1.0.6
+      uses: AButler/upload-release-assets@v3.0
       with:
-        tag: v${{ inputs.version }}
-        item-path: "./cli/*.json"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  github-release:
-    needs: [docker-build]
-    uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
-    with:
-      version: ${{ github.event.inputs.version }}
-      publish: false
+        files: "${{ steps.generate_am.outputs.app-manifest-path }}"
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        release-tag: v${{ inputs.version }}
 
   # upload-assets:
   #   needs: [github-release]

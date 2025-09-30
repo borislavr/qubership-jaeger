@@ -1,0 +1,5 @@
+version: "2.0"
+name: docker-hub
+dockerConfig:
+  groupUri: docker.io
+  groupName: dockerhub

@@ -1,3 +1,67 @@
 name: "Application manifest generation"
 
 inputs:
+  - name: configuration
+    description: "The configuration file for the application manifest generation"
+    required: true
+    type: string
+  - name: output
+    description: "The output file path for the generated application manifest"
+    required: false
+    type: string
+  - name: version
+    description: "The version to set in the application manifest"
+    required: false
+    type: string
+  - name: name
+    description: "The name to set in the application manifest"
+    required: false
+    type: string
+  - name: meta-data-files
+    description: "Additional metadata files to include in the application manifest"
+    required: false
+    type: string
+
+outputs:
+  - name: app-manifest-path
+    description: "The path to the generated application manifest file"
+    value: ${{ steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
+runs:
+  using: "composite"
+  steps:
+    - name: "Checkout repository"
+      uses: "actions/checkout@v5"
+      with:
+        repository: borislavr/qubership-app-manifest-cli
+        ref: "main"
+        path: "app-manifest-cli"
+    - name: Configure Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      working-directory: app-manifest-cli
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        python -m pip install --upgrade pip
+        pip install .
+      shell: bash
+    - name: "Generate application manifest"
+      working-directory: ${{ github.workspace }}
+      id: generate_app_manifest
+      run: |
+        app-manifest generate \
+          --config "${{ inputs.configuration }}" \
+          $([[ -n "${{ inputs.output }}" ]] && echo "--output ${{ inputs.output }}") \
+          $([[ -n "${{ inputs.version }}" ]] && echo "--version ${{ inputs.version }}") \
+          $([[ -n "${{ inputs.name }}" ]] && echo "--name ${{ inputs.name }}") \
+          $([[ -n "${{ inputs.meta-data-files }}" ]] && echo "${{ inputs.meta-data-files }}")
+          echo "PATH_APP_MANIFEST=$([[ -n '${{ inputs.output }}' ]] && echo '${{ inputs.output }}' || echo '${PATH_APP_MANIFEST}')" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: "Upload application manifest"
+      if: ${{ always() && steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
+      uses: actions/upload-artifact@v5
+      with:
+        name: application-manifest
+        path: ${{ steps.generate_app_manifest.outputs.PATH_APP_MANIFEST }}
