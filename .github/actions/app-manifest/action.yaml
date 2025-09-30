@@ -67,6 +67,7 @@ runs:
           $([[ -n "${{ inputs.version }}" ]] && echo "--version ${{ inputs.version }}") \
           $([[ -n "${{ inputs.name }}" ]] && echo "--name ${{ inputs.name }}") \
           $([[ -n "${{ inputs.meta-data-files }}" ]] && echo "${{ inputs.meta-data-files }}")
+          echo "PATH_APP_MANIFEST=$([[ -n '${{ inputs.output }}' ]] && echo '${{ inputs.output }}' || echo ${PATH_APP_MANIFEST})"
           echo "PATH_APP_MANIFEST=$([[ -n '${{ inputs.output }}' ]] && echo '${{ inputs.output }}' || echo ${PATH_APP_MANIFEST})" >> $GITHUB_OUTPUT
       shell: bash
     - name: "Upload application manifest"
