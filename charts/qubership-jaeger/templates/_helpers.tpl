@@ -234,7 +234,7 @@ Image can be found from:
   {{- if .Values.integrationTests.image -}}
     {{- printf "%s" .Values.integrationTests.image -}}
   {{- else -}}
-    {{- print "ghcr.io/netcracker/jaeger-integration-tests:main" -}}
+    {{- print "ghcr.io/netcracker/jaeger-integration-tests:0.1.4" -}}
   {{- end -}}
 {{- end -}}
 
@@ -245,7 +245,7 @@ Find a Deployment Status Provisioner image in various places.
   {{- if .Values.statusProvisioner.image -}}
     {{- printf "%s" .Values.statusProvisioner.image -}}
   {{- else -}}
-    {{- print "ghcr.io/netcracker/qubership-deployment-status-provisioner:main" -}}
+    {{- print "ghcr.io/netcracker/qubership-deployment-status-provisioner:0.2.2" -}}
   {{- end -}}
 {{- end -}}
 
@@ -256,7 +256,7 @@ Find a readiness-probe image in various places.
   {{- if .Values.readinessProbe.image -}}
     {{- printf "%s" .Values.readinessProbe.image -}}
   {{- else -}}
-    {{- print "ghcr.io/netcracker/jaeger-readiness-probe:main" -}}
+    {{- print "ghcr.io/netcracker/jaeger-readiness-probe:0.1.4" -}}
   {{- end -}}
 {{- end -}}
 
@@ -267,7 +267,7 @@ Find a Spark Dependencies image in various places.
   {{- if .Values.spark.image -}}
     {{- printf "%s" .Values.spark.image -}}
   {{- else -}}
-    {{- print "ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:latest" -}}
+    {{- print "ghcr.io/jaegertracing/spark-dependencies/spark-dependencies:v0.5.1" -}}
   {{- end -}}
 {{- end -}}
 
