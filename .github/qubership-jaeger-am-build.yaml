@@ -53,7 +53,7 @@ components:
     reference: docker.io/jaegertracing/jaeger:2.9.0
   - name: jaeger-readiness-probe
     mimeType: application/vnd.docker.image
-    reference: ghcr.io/netcracker/jaeger-readiness-probe:0.25.1
+    reference: ghcr.io/netcracker/jaeger-readiness-probe:1.0.1
   - name: example-hotrod
     mimeType: application/vnd.docker.image
     reference: docker.io/jaegertracing/example-hotrod:1.72.0
