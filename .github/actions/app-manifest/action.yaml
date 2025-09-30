@@ -52,6 +52,7 @@ runs:
       id: generate_app_manifest
       run: |
         source ./app-manifest-cli/venv/bin/activate
+        pip list
         app-manifest generate \
           --config "${{ inputs.configuration }}" \
           $([[ -n "${{ inputs.output }}" ]] && echo "--output ${{ inputs.output }}") \
