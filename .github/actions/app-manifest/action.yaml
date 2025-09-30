@@ -21,6 +21,11 @@ inputs:
     description: "Additional metadata files to include in the application manifest"
     required: false
     type: string
+  cli-version:
+    description: "The version of the qubership-app-manifest-cli to use"
+    required: false
+    type: string
+    default: "main"
 
 outputs:
   app-manifest-path:
@@ -33,7 +38,7 @@ runs:
       uses: "actions/checkout@v5"
       with:
         repository: borislavr/qubership-app-manifest-cli
-        ref: "main"
+        ref: "refactoring"
         path: "app-manifest-cli"
     - name: Configure Python
       uses: actions/setup-python@v4
@@ -46,9 +51,9 @@ runs:
         source venv/bin/activate
         python -m pip install --upgrade pip
         pip install .
-        pip list
-        pip install PyYAML>=6.0.3
-        pip list
+        # pip list
+        # pip install PyYAML>=6.0.3
+        # pip list
       shell: bash
     - name: "Generate application manifest"
       working-directory: ${{ github.workspace }}
