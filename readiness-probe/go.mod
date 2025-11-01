@@ -6,9 +6,9 @@ toolchain go1.24.1
 
 require (
 	github.com/gocql/gocql v1.7.0
-	k8s.io/api v0.34.0
-	k8s.io/apimachinery v0.34.0
-	k8s.io/client-go v0.34.0
+	k8s.io/api v0.34.1
+	k8s.io/apimachinery v0.34.1
+	k8s.io/client-go v0.34.1
 	sigs.k8s.io/controller-runtime v0.22.0
 )
 
