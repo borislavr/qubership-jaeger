@@ -134,7 +134,7 @@ jobs:
 
     - name: Generate AM
       id: generate_am
-      uses: borislavr/qubership-app-manifest-cli/.github/actions/app-manifest@feature/app-manifest-action
+      uses: netcracker/qubership-app-manifest-cli/.github/actions/app-manifest@feature/app-manifest-action
       with:
         configuration: ./.github/qubership-jaeger-am-build.yaml
         version: ${{ inputs.version }}
