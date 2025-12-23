@@ -137,11 +137,9 @@ jobs:
       uses: borislavr/qubership-app-manifest-cli/.github/actions/app-manifest@feature/app-manifest-action
       with:
         configuration: ./.github/qubership-jaeger-am-build.yaml
-        # output: ./cli/jaeger-application-manifest-v${{ inputs.version }}.json
         version: ${{ inputs.version }}
-        # name: jaeger
-        meta-data-files: ${{ env.META_DATA_FILES }}
-        cli-version: refactoring
+        download-metadata-files: ${{ env.META_DATA_FILES }}
+        cli-version: main
 
     - name: Upload AM to release
       uses: netcracker/qubership-workflow-hub/actions/assets-action@v2.0.6
