@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Check if tag exists
         id: check_tag
-        uses: netcracker/qubership-workflow-hub/actions/tag-action@main
+        uses: netcracker/qubership-workflow-hub/actions/tag-action@v2.0.6
         with:
           ref: ${{ github.ref }}
           check-tag: 'true'
@@ -76,14 +76,15 @@ jobs:
       with:
         fetch-depth: 0
     - name: Release Chart
-      uses: netcracker/qubership-workflow-hub/actions/charts-values-update-action@feature/chart-publish-action
+      uses: netcracker/qubership-workflow-hub/actions/charts-values-update-action@v2.0.6
       with:
         config-file: ./.github/chart-release-config.yaml
         release-version: ${{ inputs.version }}
+        default-tag: ${{ inputs.version }}
         package-charts: true
         publish-charts: true
     - name: "Create release tag"
-      uses: netcracker/qubership-workflow-hub/actions/tag-action@main
+      uses: netcracker/qubership-workflow-hub/actions/tag-action@v2.0.6
       with:
         ref: "release-${{ github.event.inputs.version }}"
         check-tag: 'false'
@@ -92,7 +93,7 @@ jobs:
 
   github-release:
     needs: [prepare-tag-and-release-chart]
-    uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
+    uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@v2.0.6
     with:
       version: ${{ github.event.inputs.version }}
       publish: false
@@ -110,7 +111,7 @@ jobs:
     steps:
     - name: "Docker Build"
       id: docker_build
-      uses: netcracker/qubership-workflow-hub/actions/docker-action@main
+      uses: netcracker/qubership-workflow-hub/actions/docker-action@v2.0.6
       with:
         ref: v${{ inputs.version }}
         download-artifact: false
@@ -130,32 +131,10 @@ jobs:
       uses: actions/checkout@v5
       with:
         ref: v${{ inputs.version }}
-        # path: current-repo
-    # - name: Checkout code
-    #   uses: actions/checkout@v5
-    #   with:
-    #     repository: borislavr/qubership-app-manifest-cli
-    #     ref: refactoring
-    #     path: cli
-    - name: Download metadata
-      uses: actions/download-artifact@v5
-      with:
-        path: "./cli/meta-data-files"
-        merge-multiple: true
-        pattern: "*.json"
-    - name: Collect metadata files
-      #working-directory: cli
-      run: |
-        meta_data_files=""
-        for file in ./cli/meta-data-files/*.json; do
-          meta_data_files="$meta_data_files $file"
-        done
-        echo "[DEBUG] Metadata files: ${meta_data_files}"
-        echo "META_DATA_FILES=${meta_data_files}" >> $GITHUB_ENV
 
     - name: Generate AM
       id: generate_am
-      uses: borislavr/qubership-app-manifest-cli/.github/actions/app-manifest@refactoring
+      uses: borislavr/qubership-app-manifest-cli/.github/actions/app-manifest@feature/app-manifest-action
       with:
         configuration: ./.github/qubership-jaeger-am-build.yaml
         # output: ./cli/jaeger-application-manifest-v${{ inputs.version }}.json
@@ -165,34 +144,9 @@ jobs:
         cli-version: refactoring
 
     - name: Upload AM to release
-      uses: netcracker/qubership-workflow-hub/actions/assets-action@9319676b7d20b423a2e0943a0ac08da07d615998 #v1.0.6
+      uses: netcracker/qubership-workflow-hub/actions/assets-action@v2.0.6
       with:
         tag: v${{ inputs.version }}
         item-path: ${{ steps.generate_am.outputs.app-manifest-path }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Upload AM to release
-    #   uses: AButler/upload-release-assets@v3.0
-    #   with:
-    #     files: "${{ steps.generate_am.outputs.app-manifest-path }}"
-    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-    #     release-tag: v${{ inputs.version }}
-
-  # upload-assets:
-  #   needs: [github-release]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
-
-  #   - name: Archive and Upload Assets
-  #     uses: netcracker/qubership-workflow-hub/actions/assets-action@v1.0.6
-  #     with:
-  #       tag: v${{ inputs.version }}
-  #       config-path: './.github/assets-config.yml'
-  #       dist-path: './dist'
-  #       upload: true
-  #       ref: v${{ github.event.inputs.version }}
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
