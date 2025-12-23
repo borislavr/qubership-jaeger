@@ -138,7 +138,7 @@ jobs:
       with:
         configuration: ./.github/qubership-jaeger-am-build.yaml
         version: ${{ inputs.version }}
-        download-metadata-files: ${{ env.META_DATA_FILES }}
+        download-metadata-files: true
         cli-version: main
 
     - name: Upload AM to release
