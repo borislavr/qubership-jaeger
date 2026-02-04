@@ -1,0 +1,125 @@
+---
+
+# Workflow to scan Docker images vulnerabilities by Grape and Trivy
+# To make it work create a configuration file .qubership/3rd-party-sec-scan-config.yaml
+# Example configuration file can be found there: config/examples/3rd-party-sec-scan-config.yaml
+name: Security Scan Source Code
+run-name: >
+  Security Scan Source
+on:
+  workflow_dispatch:
+    inputs:
+      only-high-critical:
+        description: "Scope only HIGH + CRITICAL"
+        required: false
+        default: true
+        type: boolean
+      trivy-scan:
+        description: "Trivy scan"
+        required: false
+        default: true
+        type: boolean
+      grype-scan:
+        description: "Grype scan"
+        required: false
+        default: true
+        type: boolean
+      continue-on-error:
+        description: "Continue on error"
+        required: false
+        default: true
+        type: boolean
+      only-fixed:
+        description: "Ignore unfixed vulnerabilities"
+        required: false
+        default: true
+        type: boolean
+  schedule:
+    - cron: "0 3 * * 0" # every Sunday at 03:00 UTC
+permissions:
+  contents: read
+
+env:
+  REPORT_BRANCH: reports
+jobs:
+  security-scan:
+    permissions:
+      security-events: write
+      contents: read
+      packages: read
+    uses: netcracker/qubership-workflow-hub/.github/workflows/re-security-scan.yml@borislavr-patch-1
+    with:
+      target: 'source'
+      only-high-critical: ${{ (github.event_name == 'schedule' && true) || inputs.only-high-critical }}
+      trivy-scan: ${{ (github.event_name == 'schedule' && true) || inputs.trivy-scan }}
+      grype-scan: ${{ (github.event_name == 'schedule' && true) || inputs.grype-scan }}
+      continue-on-error: ${{ (github.event_name == 'schedule' && true) || inputs.continue-on-error }}
+      only-fixed: ${{ (github.event_name == 'schedule' && true) || inputs.only-fixed }}
+      upload-sarif-to-security: true
+
+  create-report:
+    needs: [security-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          path: repo
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Ensure branch exists
+        working-directory: repo
+        run: |
+          if git ls-remote --exit-code --heads origin "${{ env.REPORT_BRANCH }}" >/dev/null 2>&1; then
+            git fetch origin "${{ env.REPORT_BRANCH }}"
+            git checkout "${{ env.REPORT_BRANCH }}"
+          else
+            git checkout -b "${{ env.REPORT_BRANCH }}"
+            git push -u origin "${{ env.REPORT_BRANCH }}"
+          fi
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: '*.sarif'
+          path: ./sarif
+          merge-multiple: true
+
+      - name: Generate report
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          ### Generating CSV report
+          mkdir -p repo
+          cur_date=$(date +%Y-%m-%d)
+          cur_time=$(date +%H-%M-%S)
+          cur_date_time=${cur_date}_${cur_time}
+          report_file_name=report-${cur_date_time}.csv
+          report_dir=repo/reports/${cur_date}
+          mkdir -p $report_dir
+          report_file_path=${report_dir}/${report_file_name}
+          echo "Report file path: ${report_file_path}"
+          i=0
+          for f in $(find ./sarif -name *.csv); do
+            if [ $i -eq 0 ]; then
+              cat $f >> ${report_file_path}
+            else
+              tail -n +2 $f >> ${report_file_path}
+            fi
+            i=$((i + 1))
+          done
+
+      - name: Commit and Push Report
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          cd repo
+          git config --global user.name "$ACTOR"
+          git config --global user.email "$ACTOR@users.noreply.github.com"
+          git add .
+          git commit -m "CSV report ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || echo "No changes"
+          git push origin "${REPORT_BRANCH}"
